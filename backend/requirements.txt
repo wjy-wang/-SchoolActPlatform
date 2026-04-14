@@ -1,0 +1,9 @@
+Django==4.2
+djangorestframework
+PyJWT
+drf-yasg
+mysqlclient
+redis
+gunicorn
+rest_framework_simplejwt
+django-redis
