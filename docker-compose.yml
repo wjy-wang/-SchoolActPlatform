@@ -32,6 +32,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./frontend/dist:/usr/share/nginx/html
+      - ./backend/staticfiles:/usr/share/nginx/html/static
     restart: always
     depends_on:
       - backend
@@ -43,6 +44,8 @@ services:
     container_name: backend-school-activity
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app 
     depends_on:
       - mysql
       - redis

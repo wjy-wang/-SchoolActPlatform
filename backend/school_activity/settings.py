@@ -156,3 +156,6 @@ SIMPLE_JWT = {
 
 # 自定义用户模型
 AUTH_USER_MODEL = 'users.User'
+
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
