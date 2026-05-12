@@ -159,3 +159,21 @@ AUTH_USER_MODEL = 'users.User'
 
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Swagger 设置（允许公开访问文档）
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
+
+# CSRF 信任来源（允许通过 Nginx 代理访问后台）
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+]

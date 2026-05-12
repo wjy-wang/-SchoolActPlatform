@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework import permissions          # ← 新增
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -14,6 +15,7 @@ schema_view = get_schema_view(
       license=openapi.License(name="BSD License"),
    ),
    public=True,
+   permission_classes=[permissions.AllowAny],   # ← 新增：允许任何人访问
 )
 
 urlpatterns = [
