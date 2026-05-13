@@ -177,3 +177,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8080',
     'http://127.0.0.1:8080',
 ]
+# CSRF 信任配置（Docker + Nginx 环境）
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8080',
+    'http://127.0.0.1:8080',
+    'http://localhost',
+    'http://127.0.0.1',
+]
+USE_X_FORWARDED_HOST = True
