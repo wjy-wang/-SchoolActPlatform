@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from datetime import timedelta
 from .serializers import (
     UserSerializer, 
     UserRegisterSerializer, 

@@ -66,6 +66,7 @@ WSGI_APPLICATION = 'school_activity.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+import os
 
 DATABASES = {
     'default': {
@@ -73,8 +74,8 @@ DATABASES = {
         'NAME': 'school_activity',
         'USER': 'school_activity_user',
         'PASSWORD': 'school_activity_pass',
-        'HOST': 'mysql',
-        'PORT': '3306',
+        'HOST': os.environ.get('DB_HOST', 'mysql'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
     }
 }
 
