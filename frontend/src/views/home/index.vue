@@ -20,50 +20,76 @@
         </el-dropdown>
       </div>
     </el-header>
-    
+
     <el-main class="main-content">
       <div class="welcome-section">
         <h2>欢迎使用校园活动发布平台</h2>
         <p>这是一个基于 Django + Vue.js 的校园活动管理系统</p>
-        
+
         <el-row :gutter="20" class="feature-cards">
           <el-col :span="8">
-            <el-card>
+            <el-card class="clickable-card" @click="goToActivities">
               <template #header>
                 <div class="card-header">
                   <el-icon><Calendar /></el-icon>
-                  <span>活动管理</span>
+                  <span>浏览活动</span>
                 </div>
               </template>
-              <div>发布、编辑和管理校园活动</div>
+              <div>查看所有校园活动</div>
             </el-card>
           </el-col>
-          
+
           <el-col :span="8">
-            <el-card>
+            <el-card class="clickable-card" @click="goToMyEnrollments">
               <template #header>
                 <div class="card-header">
                   <el-icon><UserFilled /></el-icon>
-                  <span>活动报名</span>
+                  <span>我的报名</span>
                 </div>
               </template>
-              <div>在线报名参加活动</div>
+              <div>查看已报名的活动</div>
             </el-card>
           </el-col>
-          
+
           <el-col :span="8">
-            <el-card>
+            <el-card class="clickable-card" @click="goToMyFavorites">
               <template #header>
                 <div class="card-header">
                   <el-icon><Star /></el-icon>
-                  <span>活动收藏</span>
+                  <span>我的收藏</span>
                 </div>
               </template>
-              <div>收藏感兴趣的活动</div>
+              <div>查看已收藏的活动</div>
             </el-card>
           </el-col>
         </el-row>
-        
+
+        <el-row :gutter="20" class="feature-cards" v-if="userStore.userInfo?.role === 1">
+          <el-col :span="12">
+            <el-card class="clickable-card admin-card" @click="goToCreateActivity">
+              <template #header>
+                <div class="card-header">
+                  <el-icon><Plus /></el-icon>
+                  <span>发布活动</span>
+                </div>
+              </template>
+              <div>创建新的校园活动</div>
+            </el-card>
+          </el-col>
+
+          <el-col :span="12">
+            <el-card class="clickable-card admin-card" @click="goToMyActivities">
+              <template #header>
+                <div class="card-header">
+                  <el-icon><Management /></el-icon>
+                  <span>管理活动</span>
+                </div>
+              </template>
+              <div>编辑或删除已创建的活动</div>
+            </el-card>
+          </el-col>
+        </el-row>
+
         <div class="user-info-section" v-if="userStore.userInfo">
           <h3>当前登录用户信息</h3>
           <el-descriptions :column="2" border>
@@ -88,14 +114,13 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowDown, Calendar, UserFilled, Star } from '@element-plus/icons-vue'
+import { ArrowDown, Calendar, UserFilled, Star, Plus, Management } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const userStore = useUserStore()
 
 onMounted(() => {
-  // 刷新用户信息
   userStore.fetchUserInfo().catch(() => {})
 })
 
@@ -129,6 +154,26 @@ const formatDate = (dateStr) => {
   if (!dateStr) return '-'
   const date = new Date(dateStr)
   return date.toLocaleString('zh-CN')
+}
+
+const goToActivities = () => {
+  router.push('/activities')
+}
+
+const goToMyEnrollments = () => {
+  router.push('/my-enrollments')
+}
+
+const goToMyFavorites = () => {
+  router.push('/my-favorites')
+}
+
+const goToCreateActivity = () => {
+  router.push('/activities/create')
+}
+
+const goToMyActivities = () => {
+  router.push('/my-activities')
 }
 </script>
 
@@ -194,6 +239,20 @@ const formatDate = (dateStr) => {
   align-items: center;
   gap: 8px;
   font-weight: bold;
+}
+
+.clickable-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.clickable-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.admin-card {
+  background: #fff5f5;
 }
 
 .user-info-section {

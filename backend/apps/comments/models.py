@@ -4,7 +4,7 @@ from apps.activities.models import Activity
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='用户')
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, verbose_name='活动')
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='comments', verbose_name='活动')
     content = models.TextField(verbose_name='评论内容')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='评论时间')
 
