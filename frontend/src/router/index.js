@@ -25,6 +25,48 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/activities',
+    name: 'ActivityList',
+    component: () => import('@/views/activities/List.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/activities/create',
+    name: 'ActivityCreate',
+    component: () => import('@/views/activities/Form.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/activities/:id',
+    name: 'ActivityDetail',
+    component: () => import('@/views/activities/Detail.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/activities/:id/edit',
+    name: 'ActivityEdit',
+    component: () => import('@/views/activities/Form.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/my-enrollments',
+    name: 'MyEnrollments',
+    component: () => import('@/views/activities/MyEnrollments.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/my-favorites',
+    name: 'MyFavorites',
+    component: () => import('@/views/activities/MyFavorites.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/my-activities',
+    name: 'MyActivities',
+    component: () => import('@/views/activities/MyActivities.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/profile/index.vue'),
@@ -49,9 +91,9 @@ const router = createRouter({
   routes
 })
 
-// 路由守卫
+
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore()
+  const userStore = useUserStore();
 
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     next('/login')
