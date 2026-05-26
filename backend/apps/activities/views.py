@@ -1,6 +1,7 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.cache import cache
 from .models import Activity
 from .serializers import (
     ActivitySerializer,
@@ -9,6 +10,7 @@ from .serializers import (
     ActivityUpdateSerializer
 )
 from apps.users.permissions import IsAdminUser
+from apps.comments.models import Comment
 
 
 class ActivityListView(generics.ListAPIView):
@@ -39,17 +41,40 @@ class ActivityListView(generics.ListAPIView):
 
 
 class ActivityDetailView(generics.RetrieveAPIView):
-    """活动详情视图"""
+    """活动详情视图（带缓存，评论列表请调用独立接口）"""
     serializer_class = ActivitySerializer
     permission_classes = [permissions.AllowAny]
-    queryset = Activity.objects.all()
+    queryset = Activity.objects.select_related('created_by')
 
     def retrieve(self, request, *args, **kwargs):
+        activity_id = self.kwargs.get('pk')
+        cache_key = f"activity:detail:{activity_id}"
+
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return Response({
+                'message': '获取成功（缓存）',
+                **cached_data
+            })
+
         instance = self.get_object()
-        serializer = self.get_serializer(instance)
+        comment_count = Comment.objects.filter(
+            activity=instance,
+            is_deleted=False
+        ).count()  # count() 只返回数量，无需 select_related
+
+        activity_serializer = self.get_serializer(instance)
+
+        data = {
+            'activity': activity_serializer.data,
+            'comment_count': comment_count
+        }
+
+        cache.set(cache_key, data, timeout=300)
+
         return Response({
             'message': '获取成功',
-            'activity': serializer.data
+            **data
         })
 
 
@@ -80,6 +105,9 @@ class ActivityUpdateView(generics.UpdateAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         activity = serializer.save()
+        
+        cache.delete(f"activity:detail:{activity.pk}")
+        
         return Response({
             'message': '活动更新成功',
             'activity': ActivitySerializer(activity, context={'request': request}).data
@@ -93,6 +121,7 @@ class ActivityDeleteView(generics.DestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+        cache.delete(f"activity:detail:{instance.pk}")
         self.perform_destroy(instance)
         return Response({
             'message': '活动删除成功'

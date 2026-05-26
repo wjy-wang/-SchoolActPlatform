@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.cache import cache
 from apps.comments.models import Comment
 from apps.comments.serializers import CommentSerializer, CommentCreateSerializer
 from apps.comments.permissions import IsOwnerOrAdmin
@@ -63,6 +64,8 @@ class ActivityCommentListView(APIView):
 
         comment = serializer.save(user=request.user, activity=activity)
 
+        cache.delete(f"activity:detail:{activity_id}")
+
         response_serializer = CommentSerializer(comment)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
@@ -83,6 +86,10 @@ class CommentDeleteView(APIView):
         # 软删除：标记为已删除
         comment.is_deleted = True
         comment.save()
+
+        # 清除相关缓存，确保数据一致性
+        activity_id = comment.activity.id
+        cache.delete(f"activity:detail:{activity_id}")
 
         return Response({
             'message': '评论删除成功'

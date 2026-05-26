@@ -14,6 +14,10 @@ class Comment(models.Model):
         verbose_name = '评论'
         verbose_name_plural = '评论'
         ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['activity', 'is_deleted', '-created_at']),  # 评论查询常用组合
+            models.Index(fields=['user', '-created_at']),                     # 用户评论列表
+        ]
 
     def __str__(self):
         return f'{self.user.username} - {self.activity.title}'
