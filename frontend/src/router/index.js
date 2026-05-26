@@ -77,6 +77,12 @@ const routes = [
     name: 'Password',
     component: () => import('@/views/profile/Password.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/activities/:id',
+    name: 'ActivityDetail',
+    component: () => import('@/views/activities/ActivityDetail.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
@@ -85,8 +91,9 @@ const router = createRouter({
   routes
 })
 
+
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore()
+  const userStore = useUserStore();
 
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     next('/login')

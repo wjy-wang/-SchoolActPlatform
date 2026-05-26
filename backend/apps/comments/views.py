@@ -1,57 +1,89 @@
-from rest_framework import generics, status, permissions
+from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Comment
-from .serializers import CommentSerializer, CommentCreateSerializer
-from apps.users.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from apps.comments.models import Comment
+from apps.comments.serializers import CommentSerializer, CommentCreateSerializer
+from apps.comments.permissions import IsOwnerOrAdmin
+from apps.activities.models import Activity
 
 
-class CommentListView(generics.ListAPIView):
-    """活动的评论列表"""
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.AllowAny]
+class ActivityCommentListView(APIView):
+    """
+    获取活动的评论列表或发布评论
+    GET: 获取活动的评论列表（分页、按时间排序）
+    POST: 发布评论
+    """
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        activity_id = self.kwargs.get('activity_id')
-        return Comment.objects.filter(activity_id=activity_id).order_by('-created_at')
+    def get(self, request, activity_id):
+        activity = get_object_or_404(Activity, id=activity_id)
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        # 只获取未删除的评论
+        comments = Comment.objects.filter(activity=activity, is_deleted=False).select_related('user')
+
+        # 分页参数
+        page = request.query_params.get('page', 1)
+        page_size = request.query_params.get('page_size', 10)
+
+        try:
+            page_size = int(page_size)
+            if page_size <= 0 or page_size > 100:
+                page_size = 10
+        except (ValueError, TypeError):
+            page_size = 10
+
+        paginator = Paginator(comments, page_size)
+
+        try:
+            comments_page = paginator.page(page)
+        except PageNotAnInteger:
+            comments_page = paginator.page(1)
+        except EmptyPage:
+            comments_page = paginator.page(paginator.num_pages)
+
+        serializer = CommentSerializer(comments_page, many=True)
+
         return Response({
-            'message': '获取成功',
-            'comments': serializer.data,
-            'count': queryset.count()
-        })
+            'count': paginator.count,
+            'num_pages': paginator.num_pages,
+            'current_page': comments_page.number,
+            'page_size': page_size,
+            'results': serializer.data
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request, activity_id):
+        activity = get_object_or_404(Activity, id=activity_id)
+
+        serializer = CommentCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        comment = serializer.save(user=request.user, activity=activity)
+
+        response_serializer = CommentSerializer(comment)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
-class CommentCreateView(generics.CreateAPIView):
-    """发表评论"""
-    serializer_class = CommentCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class CommentDeleteView(APIView):
+    """
+    删除评论
+    DELETE: 删除评论（普通用户只能删自己的，管理员可删任何）
+    """
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        comment = serializer.save()
+    def delete(self, request, comment_id):
+        comment = get_object_or_404(Comment, id=comment_id)
+
+        # 检查权限（由 IsOwnerOrAdmin 权限类处理）
+        self.check_object_permissions(request, comment)
+
+        # 软删除：标记为已删除
+        comment.is_deleted = True
+        comment.save()
+
         return Response({
-            'message': '评论成功',
-            'comment': CommentSerializer(comment).data
-        }, status=status.HTTP_201_CREATED)
-
-
-class CommentDeleteView(generics.DestroyAPIView):
-    """删除评论（仅管理员或评论者本人）"""
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.role == 1:
-            return Comment.objects.all()
-        return Comment.objects.filter(user=user)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({
-            'message': '删除成功'
+            'message': '评论删除成功'
         }, status=status.HTTP_200_OK)
