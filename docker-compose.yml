@@ -5,10 +5,10 @@ services:
     image: mysql:8.0
     container_name: mysql-school-activity
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: school_activity
-      MYSQL_USER: school_activity_user
-      MYSQL_PASSWORD: school_activity_pass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3307:3306"
     volumes:

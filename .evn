@@ -1,0 +1,6 @@
+#步骤 1：准备环境变量（敏感信息不写死在配置中）#
+MYSQL_ROOT_PASSWORD=root123456
+MYSQL_DATABASE=school_activity
+MYSQL_USER=user
+MYSQL_PASSWORD=123456 
+SECRET_KEY=your_django_secret_key
