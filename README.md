@@ -148,10 +148,10 @@ npm run dev
 | 服务         | 地址                           | 说明            |
 | ------------ | ------------------------------ | --------------- |
 | 前端页面     | http://localhost/              | 用户界面        |
-| 后端API      | http://localhost:8000/api/     | RESTful API     |
-| Swagger文档  | http://localhost:8000/swagger/ | API文档         |
-| ReDoc文档    | http://localhost:8000/redoc/   | API文档（替代） |
-| Django Admin | http://localhost:8000/admin/   | 管理后台        |
+| 后端API      | http://localhost:8080/api/     | RESTful API     |
+| Swagger文档  | http://localhost:8080/swagger/ | API文档         |
+| ReDoc文档    | http://localhost:8080/redoc/   | API文档（替代） |
+| Django Admin | http://localhost:8080/admin/   | 管理后台        |
 
 ## API 接口文档
 
@@ -178,7 +178,7 @@ npm run dev
 #### 用户注册
 
 ```bash
-curl -X POST http://localhost:8000/api/auth/register/ \
+curl -X POST http://localhost:8080/api/auth/register/ \
   -H "Content-Type: application/json" \
   -d '{
     "username": "testuser",
@@ -193,7 +193,7 @@ curl -X POST http://localhost:8000/api/auth/register/ \
 #### 用户登录
 
 ```bash
-curl -X POST http://localhost:8000/api/auth/login/ \
+curl -X POST http://localhost:8080/api/auth/login/ \
   -H "Content-Type: application/json" \
   -d '{
     "username": "testuser",

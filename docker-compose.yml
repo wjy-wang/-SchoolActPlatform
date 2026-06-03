@@ -46,11 +46,14 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app 
+      - ./ca.pem:/app/ca.pem
     depends_on:
       - mysql
       - redis
+    entrypoint: ""                      # <-- 新增：清空镜像自带的 ENTRYPOINT
+    command: ["gunicorn", "school_activity.wsgi:application", "--bind", "0.0.0.0:8000"]   # <-- 新增：直接运行 gunicorn
     environment:
-      - DATABASE_URL=mysql://school_activity_user:school_activity_pass@mysql:3306/school_activity
+      # - DATABASE_URL=mysql://school_activity_user:school_activity_pass@mysql:3306/school_activity  # 已注释，改用云数据库
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=your-secret-key-here
     restart: always
