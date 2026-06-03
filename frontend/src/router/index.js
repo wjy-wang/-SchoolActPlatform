@@ -39,7 +39,7 @@ const routes = [
   {
     path: '/activities/:id',
     name: 'ActivityDetail',
-    component: () => import('@/views/activities/Detail.vue'),
+    component: () => import('@/views/activities/ActivityDetail.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -67,6 +67,18 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/enrollment-list',
+    name: 'EnrollmentList',
+    component: () => import('@/views/activities/EnrollmentList.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/favorite-list',
+    name: 'FavoriteList',
+    component: () => import('@/views/activities/FavoriteList.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/profile/index.vue'),
@@ -76,12 +88,6 @@ const routes = [
     path: '/password',
     name: 'Password',
     component: () => import('@/views/profile/Password.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/activities/:id',
-    name: 'ActivityDetail',
-    component: () => import('@/views/activities/ActivityDetail.vue'),
     meta: { requiresAuth: true }
   }
 ]

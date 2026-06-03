@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Enrollment
 from .serializers import EnrollmentSerializer, EnrollmentCreateSerializer
 from apps.activities.models import Activity
+from apps.users.permissions import IsAdminUser
 
 
 class EnrollmentListView(generics.ListAPIView):
@@ -12,6 +13,24 @@ class EnrollmentListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Enrollment.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'message': '获取成功',
+            'enrollments': serializer.data,
+            'count': queryset.count()
+        })
+
+
+class AllEnrollmentListView(generics.ListAPIView):
+    """所有报名列表（仅管理员）"""
+    serializer_class = EnrollmentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        return Enrollment.objects.select_related('user', 'activity').order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

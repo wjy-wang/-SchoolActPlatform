@@ -5,6 +5,7 @@ from .views import (
     ActivityCreateView,
     ActivityUpdateView,
     ActivityDeleteView,
+    ActivityBulkUpdateView,
     MyActivitiesView
 )
 
@@ -15,4 +16,5 @@ urlpatterns = [
     path('activities/<int:pk>/', ActivityDetailView.as_view(), name='activity-detail'),
     path('activities/<int:pk>/update/', ActivityUpdateView.as_view(), name='activity-update'),
     path('activities/<int:pk>/delete/', ActivityDeleteView.as_view(), name='activity-delete'),
+    path('activities/bulk-update/', ActivityBulkUpdateView.as_view(), name='activity-bulk-update'),
 ]

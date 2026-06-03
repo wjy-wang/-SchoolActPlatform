@@ -208,7 +208,8 @@ const goBack = () => {
 }
 
 onMounted(() => {
-  if (!userStore.isAdmin) {
+  // 如果是创建活动，只有管理员可以访问
+  if (!isEdit.value && !userStore.isAdmin) {
     ElMessage.error('只有管理员可以创建活动')
     router.push('/activities')
     return

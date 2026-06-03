@@ -21,3 +21,13 @@ class IsRegularUser(permissions.BasePermission):
     """检查用户是否为普通用户"""
     def has_permission(self, request, view):
         return request.user and request.user.is_authenticated and request.user.role == 0
+
+
+class IsActivityOwnerOrAdmin(permissions.BasePermission):
+    """检查用户是否为活动创建者或管理员"""
+    def has_object_permission(self, request, view, obj):
+        # 管理员有所有权限
+        if request.user.role == 1:
+            return True
+        # 用户只能编辑自己创建的活动
+        return obj.created_by.id == request.user.id
