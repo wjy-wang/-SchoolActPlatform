@@ -75,11 +75,16 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'school_activity',
-        'USER': 'school_activity_user',
-        'PASSWORD': 'school_activity_pass',
-        'HOST': os.environ.get('DB_HOST', 'mysql'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+        'NAME': 'school_activity',  # 或者用户自己创建的数据库名
+        'USER': '4BBADcXQY3ohvLB.root',
+        'PASSWORD': 'g5jxbWsSy3lrDPbF',
+        'HOST': 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
+        'PORT': '4000',
+        'OPTIONS': {
+            'ssl': {
+                'ca': '/app/ca.pem',
+            },
+        },
     }
 }
 

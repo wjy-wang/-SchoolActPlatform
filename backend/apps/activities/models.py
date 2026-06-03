@@ -10,6 +10,7 @@ class Activity(models.Model):
                               verbose_name='活动类型')
     location = models.CharField(max_length=100, verbose_name='活动地点')
     poster = models.CharField(max_length=200, blank=True, null=True, verbose_name='活动海报URL')
+    poster_image = models.BinaryField(null=True, blank=True, verbose_name='海报图片')
     organizer = models.CharField(max_length=50, verbose_name='组织者')
     status = models.IntegerField(default=0, choices=((0, '未开始'), (1, '进行中'), (2, '已结束')), 
                                  verbose_name='状态')
