@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     EnrollmentListView,
+    AllEnrollmentListView,
     ActivityEnrollmentListView,
     EnrollmentCreateView,
     EnrollmentDeleteView
@@ -8,6 +9,7 @@ from .views import (
 
 urlpatterns = [
     path('enrollments/', EnrollmentListView.as_view(), name='enrollment-list'),
+    path('enrollments/all/', AllEnrollmentListView.as_view(), name='all-enrollment-list'),
     path('enrollments/create/', EnrollmentCreateView.as_view(), name='enrollment-create'),
     path('enrollments/<int:pk>/', EnrollmentDeleteView.as_view(), name='enrollment-delete'),
     path('activities/<int:activity_id>/enrollments/', ActivityEnrollmentListView.as_view(), name='activity-enrollments'),

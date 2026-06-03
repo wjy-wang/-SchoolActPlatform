@@ -2,6 +2,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from .models import Favorite
 from .serializers import FavoriteSerializer, FavoriteCreateSerializer
+from apps.users.permissions import IsAdminUser
 
 
 class FavoriteListView(generics.ListAPIView):
@@ -11,6 +12,24 @@ class FavoriteListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Favorite.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'message': '获取成功',
+            'favorites': serializer.data,
+            'count': queryset.count()
+        })
+
+
+class AllFavoriteListView(generics.ListAPIView):
+    """所有收藏列表（仅管理员）"""
+    serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        return Favorite.objects.select_related('user', 'activity').order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

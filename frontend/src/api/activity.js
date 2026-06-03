@@ -117,3 +117,17 @@ export function getActivityEnrollments(activityId) {
     method: 'get'
   })
 }
+
+export function getAllEnrollments() {
+  return request({
+    url: '/enrollments/all/',
+    method: 'get'
+  })
+}
+
+export function getAllFavorites() {
+  return request({
+    url: '/favorites/all/',
+    method: 'get'
+  })
+}

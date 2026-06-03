@@ -13,9 +13,31 @@
       <template #header>
         <div class="activity-header">
           <h2>{{ activity.title }}</h2>
-          <el-tag :type="getStatusType(activity.status)">
-            {{ getStatusText(activity.status) }}
-          </el-tag>
+          <div class="activity-actions">
+            <el-tag :type="getStatusType(activity.status)">
+              {{ getStatusText(activity.status) }}
+            </el-tag>
+            <!-- 编辑按钮 -->
+            <el-button
+              v-if="activity.can_edit"
+              link
+              type="primary"
+              @click="goToEdit"
+            >
+              <el-icon><Edit /></el-icon>
+              编辑
+            </el-button>
+            <!-- 删除按钮 -->
+            <el-button
+              v-if="activity.can_delete"
+              link
+              type="danger"
+              @click="handleDeleteActivity"
+            >
+              <el-icon><Delete /></el-icon>
+              删除
+            </el-button>
+          </div>
         </div>
       </template>
 
@@ -45,7 +67,60 @@
               <el-descriptions-item label="活动描述">
                 {{ activity.description }}
               </el-descriptions-item>
+              <el-descriptions-item label="报名人数">
+                {{ activity.enrollment_count }} 人
+              </el-descriptions-item>
             </el-descriptions>
+            
+            <!-- 操作按钮 -->
+            <div class="activity-actions-row" v-if="userStore.isLoggedIn">
+              <!-- 报名按钮 -->
+              <el-button
+                v-if="!activity.is_enrolled"
+                type="primary"
+                @click="handleEnroll"
+              >
+                <el-icon><User /></el-icon>
+                报名活动
+              </el-button>
+              <el-button
+                v-else
+                type="success"
+                @click="handleCancelEnroll"
+              >
+                <el-icon><User /></el-icon>
+                已报名
+              </el-button>
+              
+              <!-- 收藏按钮 -->
+              <el-button
+                v-if="!activity.is_favorited"
+                type="info"
+                @click="handleFavorite"
+              >
+                <el-icon><Star /></el-icon>
+                收藏活动
+              </el-button>
+              <el-button
+                v-else
+                type="warning"
+                @click="handleCancelFavorite"
+              >
+                <el-icon><Star /></el-icon>
+                已收藏
+              </el-button>
+            </div>
+            <div v-else class="login-prompt">
+              <el-alert
+                title="请先登录后再进行报名和收藏"
+                type="info"
+                :closable="false"
+              >
+                <template #default>
+                  <el-button link type="primary" @click="goToLogin">去登录</el-button>
+                </template>
+              </el-alert>
+            </div>
           </el-col>
         </el-row>
       </div>
@@ -163,17 +238,36 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ArrowLeft, ChatDotRound, Delete } from '@element-plus/icons-vue'
+import { ArrowLeft, ChatDotRound, Delete, Edit, Star, User } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { getActivityComments, createComment, deleteComment } from '@/api/comment'
+import { getActivityDetail, deleteActivity, enrollActivity, cancelEnrollment, favoriteActivity, cancelFavorite } from '@/api/activity'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
 // 活动数据
-const activity = ref({})
+const activity = ref({
+  id: null,
+  title: '',
+  type: 0,
+  status: 0,
+  start_time: '',
+  end_time: '',
+  location: '',
+  organizer: '',
+  description: '',
+  poster: '',
+  can_edit: false,
+  can_delete: false,
+  is_enrolled: false,
+  is_favorited: false,
+  enrollment_count: 0
+})
 const activityLoading = ref(false)
+const enrollmentId = ref(null)
+const favoriteId = ref(null)
 
 // 评论数据
 const comments = ref([])
@@ -237,31 +331,102 @@ const goToLogin = () => {
   router.push('/login')
 }
 
-// 获取活动详情（模拟数据，实际需要调用API）
+// 获取活动详情
 const fetchActivityDetail = async () => {
   activityLoading.value = true
   try {
-    // TODO: 调用获取活动详情API
-    // const res = await getActivityDetail(activityId.value)
-    // activity.value = res
-
-    // 模拟数据
-    activity.value = {
-      id: activityId.value,
-      title: '示例活动',
-      type: 0,
-      status: 1,
-      start_time: '2026-05-20 10:00:00',
-      end_time: '2026-05-20 12:00:00',
-      location: '学校大礼堂',
-      organizer: '学生会',
-      description: '这是一个示例活动描述',
-      poster: ''
-    }
+    const res = await getActivityDetail(activityId.value)
+    activity.value = res.activity
   } catch (error) {
     ElMessage.error('获取活动详情失败')
   } finally {
     activityLoading.value = false
+  }
+}
+
+// 跳转到编辑页面
+const goToEdit = () => {
+  router.push(`/activities/${activityId.value}/edit`)
+}
+
+// 删除活动
+const handleDeleteActivity = async () => {
+  try {
+    await ElMessageBox.confirm('确定要删除这个活动吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+
+    await deleteActivity(activityId.value)
+    ElMessage.success('活动删除成功')
+    router.push('/activities')
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('活动删除失败')
+    }
+  }
+}
+
+// 报名活动
+const handleEnroll = async () => {
+  try {
+    const res = await enrollActivity({ activity: activityId.value })
+    ElMessage.success('报名成功')
+    activity.value.is_enrolled = true
+    activity.value.enrollment_count++
+    enrollmentId.value = res.enrollment.id
+  } catch (error) {
+    ElMessage.error('报名失败')
+  }
+}
+
+// 取消报名
+const handleCancelEnroll = async () => {
+  try {
+    if (enrollmentId.value) {
+      await cancelEnrollment(enrollmentId.value)
+    } else {
+      // 如果没有 enrollmentId，尝试通过活动ID取消
+      // 这里可能需要调用一个新的API或使用其他方式
+      ElMessage.error('无法取消报名')
+      return
+    }
+    ElMessage.success('取消报名成功')
+    activity.value.is_enrolled = false
+    activity.value.enrollment_count--
+    enrollmentId.value = null
+  } catch (error) {
+    ElMessage.error('取消报名失败')
+  }
+}
+
+// 收藏活动
+const handleFavorite = async () => {
+  try {
+    const res = await favoriteActivity({ activity: activityId.value })
+    ElMessage.success('收藏成功')
+    activity.value.is_favorited = true
+    favoriteId.value = res.favorite.id
+  } catch (error) {
+    ElMessage.error('收藏失败')
+  }
+}
+
+// 取消收藏
+const handleCancelFavorite = async () => {
+  try {
+    if (favoriteId.value) {
+      await cancelFavorite(favoriteId.value)
+    } else {
+      ElMessage.error('无法取消收藏')
+      return
+    }
+    ElMessage.success('取消收藏成功')
+    activity.value.is_favorited = false
+    favoriteId.value = null
+  } catch (error) {
+    ElMessage.error('取消收藏失败')
   }
 }
 
@@ -378,6 +543,22 @@ onMounted(() => {
 .activity-header h2 {
   margin: 0;
   font-size: 20px;
+}
+
+.activity-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.activity-actions-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.login-prompt {
+  margin-top: 15px;
 }
 
 .activity-poster {

@@ -9,7 +9,7 @@ from .serializers import (
     ActivityCreateSerializer,
     ActivityUpdateSerializer
 )
-from apps.users.permissions import IsAdminUser
+from apps.users.permissions import IsAdminUser, IsActivityOwnerOrAdmin
 from apps.comments.models import Comment
 
 
@@ -63,7 +63,7 @@ class ActivityDetailView(generics.RetrieveAPIView):
             is_deleted=False
         ).count()  # count() 只返回数量，无需 select_related
 
-        activity_serializer = self.get_serializer(instance)
+        activity_serializer = self.get_serializer(instance, context={'request': request})
 
         data = {
             'activity': activity_serializer.data,
@@ -94,16 +94,18 @@ class ActivityCreateView(generics.CreateAPIView):
 
 
 class ActivityUpdateView(generics.UpdateAPIView):
-    """更新活动视图（仅管理员）"""
+    """更新活动视图（活动创建者或管理员）"""
     serializer_class = ActivityUpdateSerializer
-    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
-    queryset = Activity.objects.all()
+    permission_classes = [permissions.IsAuthenticated, IsActivityOwnerOrAdmin]
+    queryset = Activity.objects.select_related('created_by')
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
+        
         activity = serializer.save()
         
         cache.delete(f"activity:detail:{activity.pk}")
@@ -111,7 +113,7 @@ class ActivityUpdateView(generics.UpdateAPIView):
         return Response({
             'message': '活动更新成功',
             'activity': ActivitySerializer(activity, context={'request': request}).data
-        })
+        }, status=status.HTTP_200_OK)
 
 
 class ActivityDeleteView(generics.DestroyAPIView):
@@ -125,6 +127,35 @@ class ActivityDeleteView(generics.DestroyAPIView):
         self.perform_destroy(instance)
         return Response({
             'message': '活动删除成功'
+        }, status=status.HTTP_200_OK)
+
+
+class ActivityBulkUpdateView(APIView):
+    """批量更新活动状态（仅管理员）"""
+    permission_classes = [permissions.IsAuthenticated, IsAdminUser]
+
+    def patch(self, request):
+        """批量更新活动状态"""
+        activity_ids = request.data.get('activity_ids', [])
+        status_data = request.data.get('status')
+        
+        if not activity_ids or status_data is None:
+            return Response({
+                'error': '缺少必要参数：activity_ids 和 status'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 更新活动状态
+        updated_count = Activity.objects.filter(
+            id__in=activity_ids
+        ).update(status=status_data)
+        
+        # 清除相关缓存
+        for activity_id in activity_ids:
+            cache.delete(f"activity:detail:{activity_id}")
+        
+        return Response({
+            'message': f'成功更新 {updated_count} 条活动',
+            'updated_count': updated_count
         }, status=status.HTTP_200_OK)
 
 

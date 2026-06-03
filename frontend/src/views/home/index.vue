@@ -40,26 +40,26 @@
           </el-col>
 
           <el-col :span="8">
-            <el-card class="clickable-card" @click="goToMyEnrollments">
+            <el-card class="clickable-card" :class="{ 'admin-card': userStore.userInfo?.role === 1 }" @click="userStore.userInfo?.role === 1 ? goToEnrollmentList : goToMyEnrollments">
               <template #header>
                 <div class="card-header">
                   <el-icon><UserFilled /></el-icon>
-                  <span>我的报名</span>
+                  <span>{{ userStore.userInfo?.role === 1 ? '报名名单' : '我的报名' }}</span>
                 </div>
               </template>
-              <div>查看已报名的活动</div>
+              <div>{{ userStore.userInfo?.role === 1 ? '查看所有用户的报名情况' : '查看已报名的活动' }}</div>
             </el-card>
           </el-col>
 
           <el-col :span="8">
-            <el-card class="clickable-card" @click="goToMyFavorites">
+            <el-card class="clickable-card" :class="{ 'admin-card': userStore.userInfo?.role === 1 }" @click="userStore.userInfo?.role === 1 ? goToFavoriteList : goToMyFavorites">
               <template #header>
                 <div class="card-header">
                   <el-icon><Star /></el-icon>
-                  <span>我的收藏</span>
+                  <span>{{ userStore.userInfo?.role === 1 ? '收藏名单' : '我的收藏' }}</span>
                 </div>
               </template>
-              <div>查看已收藏的活动</div>
+              <div>{{ userStore.userInfo?.role === 1 ? '查看所有用户的收藏情况' : '查看已收藏的活动' }}</div>
             </el-card>
           </el-col>
         </el-row>
@@ -174,6 +174,14 @@ const goToCreateActivity = () => {
 
 const goToMyActivities = () => {
   router.push('/my-activities')
+}
+
+const goToEnrollmentList = () => {
+  router.push('/enrollment-list')
+}
+
+const goToFavoriteList = () => {
+  router.push('/favorite-list')
 }
 </script>
 
