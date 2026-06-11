@@ -80,10 +80,10 @@ DATABASES = {
         'PASSWORD': 'g5jxbWsSy3lrDPbF',
         'HOST': 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com',
         'PORT': '4000',
+        'CONN_MAX_AGE': 60,   # 保持连接60秒，避免频繁握手
         'OPTIONS': {
-            'ssl': {
-                'ca': '/app/ca.pem',
-            },
+            'ssl': {'ca': '/app/ca.pem'},
+            'connect_timeout': 10,  # 连接超时时间
         },
     }
 }
