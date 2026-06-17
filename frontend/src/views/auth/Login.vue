@@ -88,19 +88,36 @@ const loginRules = {
 }
 
 const handleLogin = async () => {
+  console.log('[DEBUG Login] handleLogin called')
+  console.log('[DEBUG Login] username:', loginForm.username)
+  console.log('[DEBUG Login] password:', loginForm.password)
+  
   const valid = await loginFormRef.value.validate().catch(() => false)
+  console.log('[DEBUG Login] form valid:', valid)
   if (!valid) return
   
   loading.value = true
   try {
-    await userStore.login({
+    console.log('[DEBUG Login] calling userStore.login...')
+    const result = await userStore.login({
       username: loginForm.username,
       password: loginForm.password,
       remember_me: loginForm.remember_me
     })
+    console.log('[DEBUG Login] login result:', result)
+    console.log('[DEBUG Login] token:', userStore.token?.slice(0, 20) + '...')
+    console.log('[DEBUG Login] userInfo:', userStore.userInfo)
+    console.log('[DEBUG Login] isLoggedIn:', userStore.isLoggedIn)
+    
     ElMessage.success('登录成功')
-    router.push('/home')
+    router.push('/home').then(() => {
+      console.log('[DEBUG Login] router push successful')
+    }).catch(err => {
+      console.error('[DEBUG Login] router push error:', err)
+    })
   } catch (error) {
+    console.error('[DEBUG Login] login error:', error)
+    console.error('[DEBUG Login] error response:', error.response?.data)
     ElMessage.error(error.response?.data?.message || '登录失败')
   } finally {
     loading.value = false

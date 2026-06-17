@@ -5,12 +5,12 @@ from apps.activities.serializers import ActivityListSerializer
 
 
 class EnrollmentSerializer(serializers.ModelSerializer):
-    activity_title = serializers.CharField(source='activity.title', read_only=True)
+    activity = ActivityListSerializer(read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Enrollment
-        fields = ['id', 'user', 'username', 'activity', 'activity_title', 'status', 'created_at']
+        fields = ['id', 'user', 'username', 'activity', 'status', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
 
 

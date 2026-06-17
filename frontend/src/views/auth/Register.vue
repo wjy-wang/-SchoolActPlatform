@@ -149,16 +149,40 @@ const registerRules = {
 }
 
 const handleRegister = async () => {
+  console.log('[DEBUG Register] handleRegister called')
+  console.log('[DEBUG Register] form data:', JSON.stringify(registerForm))
+  
   const valid = await registerFormRef.value.validate().catch(() => false)
+  console.log('[DEBUG Register] form valid:', valid)
   if (!valid) return
   
   loading.value = true
   try {
-    await userStore.register(registerForm)
+    console.log('[DEBUG Register] calling userStore.register...')
+    const result = await userStore.register(registerForm)
+    console.log('[DEBUG Register] register result:', result)
     ElMessage.success('注册成功，请登录')
     router.push('/login')
   } catch (error) {
-    ElMessage.error(error.response?.data?.message || error.message || '注册失败')
+    console.error('[DEBUG Register] register error:', error)
+    console.error('[DEBUG Register] error response:', error.response?.data)
+    console.error('[DEBUG Register] error message:', error.message)
+    
+    // 显示更详细的错误信息
+    const errors = error.response?.data
+    if (errors && typeof errors === 'object') {
+      let errorMsg = ''
+      for (const field in errors) {
+        if (Array.isArray(errors[field])) {
+          errorMsg += `${field}: ${errors[field].join(', ')}\n`
+        } else {
+          errorMsg += `${field}: ${errors[field]}\n`
+        }
+      }
+      ElMessage.error(errorMsg || '注册失败')
+    } else {
+      ElMessage.error(error.response?.data?.message || error.message || '注册失败')
+    }
   } finally {
     loading.value = false
   }

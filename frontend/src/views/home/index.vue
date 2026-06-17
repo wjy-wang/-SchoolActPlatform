@@ -40,7 +40,7 @@
           </el-col>
 
           <el-col :span="8">
-            <el-card class="clickable-card" :class="{ 'admin-card': userStore.userInfo?.role === 1 }" @click="userStore.userInfo?.role === 1 ? goToEnrollmentList : goToMyEnrollments">
+            <el-card class="clickable-card" :class="{ 'admin-card': userStore.userInfo?.role === 1 }" @click="handleEnrollmentsClick">
               <template #header>
                 <div class="card-header">
                   <el-icon><UserFilled /></el-icon>
@@ -52,7 +52,7 @@
           </el-col>
 
           <el-col :span="8">
-            <el-card class="clickable-card" :class="{ 'admin-card': userStore.userInfo?.role === 1 }" @click="userStore.userInfo?.role === 1 ? goToFavoriteList : goToMyFavorites">
+            <el-card class="clickable-card" :class="{ 'admin-card': userStore.userInfo?.role === 1 }" @click="handleFavoritesClick">
               <template #header>
                 <div class="card-header">
                   <el-icon><Star /></el-icon>
@@ -160,12 +160,46 @@ const goToActivities = () => {
   router.push('/activities')
 }
 
-const goToMyEnrollments = () => {
-  router.push('/my-enrollments')
+const handleEnrollmentsClick = () => {
+  console.log('[DEBUG] handleEnrollmentsClick clicked')
+  console.log('[DEBUG] userStore.isLoggedIn:', userStore.isLoggedIn)
+  console.log('[DEBUG] userStore.token:', userStore.token?.slice(0, 20) + '...')
+  console.log('[DEBUG] userStore.userInfo:', userStore.userInfo)
+  console.log('[DEBUG] user role:', userStore.userInfo?.role)
+  
+  const targetRoute = userStore.userInfo?.role === 1 ? '/enrollment-list' : '/my-enrollments'
+  console.log('[DEBUG] targetRoute:', targetRoute)
+  
+  try {
+    router.push(targetRoute).then(() => {
+      console.log('[DEBUG] Router push successful')
+    }).catch(err => {
+      console.error('[DEBUG] Router push error:', err)
+    })
+  } catch (err) {
+    console.error('[DEBUG] Exception:', err)
+  }
 }
 
-const goToMyFavorites = () => {
-  router.push('/my-favorites')
+const handleFavoritesClick = () => {
+  console.log('[DEBUG] handleFavoritesClick clicked')
+  console.log('[DEBUG] userStore.isLoggedIn:', userStore.isLoggedIn)
+  console.log('[DEBUG] userStore.token:', userStore.token?.slice(0, 20) + '...')
+  console.log('[DEBUG] userStore.userInfo:', userStore.userInfo)
+  console.log('[DEBUG] user role:', userStore.userInfo?.role)
+  
+  const targetRoute = userStore.userInfo?.role === 1 ? '/favorite-list' : '/my-favorites'
+  console.log('[DEBUG] targetRoute:', targetRoute)
+  
+  try {
+    router.push(targetRoute).then(() => {
+      console.log('[DEBUG] Router push successful')
+    }).catch(err => {
+      console.error('[DEBUG] Router push error:', err)
+    })
+  } catch (err) {
+    console.error('[DEBUG] Exception:', err)
+  }
 }
 
 const goToCreateActivity = () => {

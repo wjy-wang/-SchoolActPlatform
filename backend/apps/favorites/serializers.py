@@ -1,18 +1,15 @@
 from rest_framework import serializers
 from .models import Favorite
+from apps.activities.serializers import ActivityListSerializer
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    activity_title = serializers.CharField(source='activity.title', read_only=True)
-    activity_type = serializers.IntegerField(source='activity.type', read_only=True)
-    activity_start_time = serializers.DateTimeField(source='activity.start_time', read_only=True)
-    activity_location = serializers.CharField(source='activity.location', read_only=True)
+    activity = ActivityListSerializer(read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Favorite
-        fields = ['id', 'user', 'username', 'activity', 'activity_title', 'activity_type',
-                  'activity_start_time', 'activity_location', 'created_at']
+        fields = ['id', 'user', 'username', 'activity', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
 
 

@@ -11,7 +11,7 @@ class FavoriteListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Favorite.objects.filter(user=self.request.user).order_by('-created_at')
+        return Favorite.objects.filter(user=self.request.user).select_related('activity').order_by('-created_at')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

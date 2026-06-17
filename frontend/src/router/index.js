@@ -100,12 +100,21 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
+  
+  console.log('[DEBUG Router] Navigation:', from.path, '->', to.path)
+  console.log('[DEBUG Router] requiresAuth:', to.meta.requiresAuth)
+  console.log('[DEBUG Router] isLoggedIn:', userStore.isLoggedIn)
+  console.log('[DEBUG Router] token:', userStore.token?.slice(0, 20) + '...')
+  console.log('[DEBUG Router] localStorage token:', localStorage.getItem('token')?.slice(0, 20) + '...')
 
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+    console.log('[DEBUG Router] Redirecting to /login')
     next('/login')
   } else if (to.meta.public && userStore.isLoggedIn) {
+    console.log('[DEBUG Router] Redirecting to /home')
     next('/home')
   } else {
+    console.log('[DEBUG Router] Proceeding to:', to.path)
     next()
   }
 })
