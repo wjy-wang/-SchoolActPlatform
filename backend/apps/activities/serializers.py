@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 from .models import Activity
 from apps.users.models import User
 
@@ -11,6 +12,8 @@ class ActivitySerializer(serializers.ModelSerializer):
     is_favorited = serializers.SerializerMethodField()
     can_edit = serializers.SerializerMethodField()
     can_delete = serializers.SerializerMethodField()
+    # 动态计算状态
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Activity
@@ -21,6 +24,20 @@ class ActivitySerializer(serializers.ModelSerializer):
             'is_enrolled', 'is_favorited', 'can_edit', 'can_delete'
         ]
         read_only_fields = ['id', 'created_by', 'created_at', 'updated_at']
+
+    def get_status(self, obj):
+        """根据实际时间动态计算活动状态"""
+        now = timezone.now()
+        
+        # 未到开始时间：未开始
+        if now < obj.start_time:
+            return 0
+        # 开始时间 <= 当前时间 <= 结束时间：进行中
+        elif obj.start_time <= now <= obj.end_time:
+            return 1
+        # 已过结束时间：已结束
+        else:
+            return 2
 
     def get_enrollment_count(self, obj):
         return obj.enrollments.count()
@@ -56,6 +73,8 @@ class ActivityListSerializer(serializers.ModelSerializer):
     """活动列表序列化器（简化版）"""
     created_by_name = serializers.CharField(source='created_by.username', read_only=True)
     enrollment_count = serializers.SerializerMethodField()
+    # 动态计算状态
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Activity
@@ -64,6 +83,20 @@ class ActivityListSerializer(serializers.ModelSerializer):
             'location', 'poster', 'status', 'created_by_name',
             'created_at', 'enrollment_count'
         ]
+
+    def get_status(self, obj):
+        """根据实际时间动态计算活动状态"""
+        now = timezone.now()
+        
+        # 未到开始时间：未开始
+        if now < obj.start_time:
+            return 0
+        # 开始时间 <= 当前时间 <= 结束时间：进行中
+        elif obj.start_time <= now <= obj.end_time:
+            return 1
+        # 已过结束时间：已结束
+        else:
+            return 2
 
     def get_enrollment_count(self, obj):
         return obj.enrollments.count()

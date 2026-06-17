@@ -147,81 +147,155 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 🎨 活动列表容器 - 柔和渐变背景 */
 .activity-list {
-  padding: 20px;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf0ff 50%, #f5f0ff 100%);
 }
 
+/* 🎨 Header - 毛玻璃效果 */
 .header {
+  max-width: 1400px;
+  margin: 0 auto 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  gap: 15px;
+  gap: 24px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .back-btn {
-  padding: 8px 16px;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 4px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4F46E5;
+  transform: translateY(-2px);
 }
 
 .header h2 {
   flex: 1;
   margin: 0;
-  font-size: 24px;
-  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.5;
 }
 
+/* 🎨 筛选器 */
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .filter-select {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 12px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  background: rgba(255, 255, 255, 0.5);
+  color: #4a5568;
+  transition: all 0.3s ease;
+  min-width: 120px;
 }
 
+.filter-select:hover {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #4F46E5;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.15);
+}
+
+/* 🎨 加载和空状态 */
 .loading, .empty {
   text-align: center;
-  padding: 60px 0;
-  color: #999;
-  font-size: 16px;
+  padding: 80px 0;
+  color: #6b7280;
+  font-size: 18px;
+  font-weight: 500;
 }
 
+/* 🎨 活动网格 - Grid布局 */
 .activity-grid {
+  max-width: 1400px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 0 20px;
 }
 
+/* 🎨 活动卡片 - 毛玻璃效果 */
 .activity-card {
-  background: #fff;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
+.activity-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.15);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* 🎨 海报区域 */
 .card-poster {
   width: 100%;
-  height: 180px;
+  height: 200px;
   overflow: hidden;
-  background: #f5f5f5;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
   cursor: pointer;
+  position: relative;
+}
+
+.card-poster::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
 }
 
 .card-poster img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.activity-card:hover .card-poster img {
+  transform: scale(1.05);
 }
 
 .poster-placeholder {
@@ -230,89 +304,137 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
 }
 
+/* 🎨 卡片内容 */
 .card-content {
-  padding: 15px;
+  padding: 20px;
   flex: 1;
 }
 
 .card-title {
-  margin: 0 0 10px 0;
-  font-size: 18px;
-  color: #333;
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a2e;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
+  transition: all 0.3s ease;
+  line-height: 1.5;
 }
 
 .card-title:hover {
-  color: #409eff;
+  color: #4F46E5;
 }
 
+/* 🎨 标签样式 - 圆点 + 文字 */
 .card-info {
   display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .type-badge, .status-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-.type-0 { background: #e3f2fd; color: #1976d2; }
-.type-1 { background: #fff3e0; color: #f57c00; }
-.type-2 { background: #fce4ec; color: #c2185b; }
-
-.status-0 { background: #f5f5f5; color: #666; }
-.status-1 { background: #e8f5e9; color: #388e3c; }
-.status-2 { background: #ffebee; color: #d32f2f; }
-
-.card-details {
-  font-size: 14px;
-  color: #666;
-}
-
-.card-details p {
-  margin: 4px 0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+.type-badge::before, .status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.type-0 {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.type-1 {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4F46E5;
+}
+
+.type-2 {
+  background: rgba(236, 72, 153, 0.1);
+  color: #ec4899;
+}
+
+.status-0 {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+}
+
+.status-1 {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.status-2 {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* 🎨 详情信息 */
+.card-details {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.card-details p {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 🎨 操作按钮 */
 .card-actions {
   display: flex;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .card-actions button {
   flex: 1;
-  padding: 10px;
+  padding: 12px;
   border: none;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .btn-edit {
-  background: #409eff;
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
   color: white;
 }
 
 .btn-edit:hover {
-  background: #66b1ff;
+  background: linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%);
+  filter: brightness(1.1);
 }
 
 .btn-delete {
-  background: #f56c6c;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
-  border-left: 1px solid #f0f0f0;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn-delete:hover {
-  background: #f78989;
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+  filter: brightness(1.1);
 }
 </style>

@@ -130,36 +130,137 @@ const goToRegister = () => {
 </script>
 
 <style scoped>
+/* 🎨 登录容器 - 柔和渐变背景 */
 .login-container {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf0ff 50%, #f5f0ff 100%);
+  padding: 20px;
 }
 
+/* 🎨 登录卡片 - 毛玻璃效果 */
 .login-card {
-  width: 400px;
-  border-radius: 8px;
+  width: 420px;
+  max-width: 100%;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
 }
 
+.login-card .el-card__header {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 32px 24px;
+}
+
+.login-card .el-card__body {
+  padding: 32px 24px;
+}
+
+/* 🎨 卡片头部 */
 .card-header {
   text-align: center;
 }
 
 .card-header h2 {
-  margin: 0 0 8px 0;
-  color: #303133;
+  margin: 0 0 12px 0;
+  color: #4F46E5;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .card-header p {
   margin: 0;
-  color: #909399;
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* 🎨 表单样式 */
+.el-form-item__label {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.el-input__wrapper {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.el-input__wrapper:hover {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.el-input__wrapper.is-focus {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.15);
+}
+
+/* 🎨 登录按钮 - 渐变蓝紫色 */
+.el-button--primary {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  border: none;
+  border-radius: 12px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+  transition: all 0.3s ease;
+}
+
+.el-button--primary:hover {
+  background: linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%);
+  box-shadow: 0 6px 24px rgba(79, 70, 229, 0.4);
+  transform: translateY(-2px);
+}
+
+.el-button--primary.is-loading {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+}
+
+/* 🎨 记住密码复选框 */
+.el-checkbox__label {
+  color: #6b7280;
   font-size: 14px;
 }
 
+.el-checkbox__inner {
+  border-radius: 4px;
+  border-color: #d1d5db;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  border-color: #4F46E5;
+}
+
+/* 🎨 底部链接 */
 .form-footer {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 24px;
+}
+
+.el-link--primary {
+  color: #4F46E5;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.el-link--primary:hover {
+  color: #7C3AED;
 }
 </style>
