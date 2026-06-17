@@ -6,10 +6,12 @@ from apps.activities.serializers import ActivityListSerializer
 class FavoriteSerializer(serializers.ModelSerializer):
     activity = ActivityListSerializer(read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
+    student_id = serializers.CharField(source='user.student_id', read_only=True)
+    activity_title = serializers.CharField(source='activity.title', read_only=True)
 
     class Meta:
         model = Favorite
-        fields = ['id', 'user', 'username', 'activity', 'created_at']
+        fields = ['id', 'user', 'username', 'student_id', 'activity', 'activity_title', 'created_at']
         read_only_fields = ['id', 'user', 'created_at']
 
 

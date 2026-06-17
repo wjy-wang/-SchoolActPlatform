@@ -219,116 +219,239 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 🎨 活动表单容器 - 柔和渐变背景 */
 .activity-form {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf0ff 50%, #f5f0ff 100%);
+  position: relative;
+  overflow: hidden;
 }
 
+.activity-form::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 20%, rgba(79, 70, 229, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(124, 58, 237, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* 🎨 Form Header - 毛玻璃效果 */
 .form-header {
+  max-width: 800px;
+  margin: 0 auto 32px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 24px;
+  padding: 24px 32px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
 }
 
 .back-btn {
-  padding: 8px 16px;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 4px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-btn::before {
+  content: '←';
+  font-size: 16px;
+}
+
+.back-btn:hover {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4F46E5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
 }
 
 .form-header h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.5;
+  letter-spacing: -0.5px;
 }
 
+/* 🎨 表单内容 - 毛玻璃卡片 */
 .form-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 48px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
 }
 
+/* 🎨 表单组 */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 28px;
+  position: relative;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 15px;
+  letter-spacing: 0.3px;
 }
 
+.form-group label::after {
+  content: '';
+}
+
+/* 🎨 表单输入框 */
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 16px 20px;
+  border: 2px solid rgba(229, 231, 235, 0.6);
+  border-radius: 14px;
+  font-size: 15px;
   box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.6);
+  color: #1a1a2e;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #409eff;
+  border-color: rgba(79, 70, 229, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08), 0 8px 24px rgba(79, 70, 229, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9ca3af;
 }
 
 .form-group textarea {
   resize: vertical;
   line-height: 1.6;
+  min-height: 180px;
 }
 
+/* 🎨 表单行 */
 .form-row {
   display: flex;
-  gap: 20px;
+  gap: 28px;
 }
 
 .form-row .form-group {
   flex: 1;
 }
 
+/* 🎨 表单操作按钮 */
 .form-actions {
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
+  gap: 20px;
+  margin-top: 40px;
+  justify-content: flex-end;
+  padding-top: 24px;
+  border-top: 1px solid rgba(229, 231, 235, 0.4);
 }
 
 .btn-submit, .btn-cancel {
-  padding: 12px 30px;
+  padding: 16px 40px;
   border: none;
-  border-radius: 4px;
+  border-radius: 14px;
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.5px;
 }
 
 .btn-submit {
-  background: #409eff;
+  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
   color: white;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-submit:hover::before {
+  left: 100%;
 }
 
 .btn-submit:hover {
-  background: #66b1ff;
+  background: linear-gradient(135deg, #5B21B6 0%, #8B5CF6 100%);
+  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.45);
+  transform: translateY(-3px);
+}
+
+.btn-submit:active {
+  transform: translateY(-1px);
 }
 
 .btn-submit:disabled {
-  background: #a0cfff;
+  background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-submit:disabled::before {
+  display: none;
 }
 
 .btn-cancel {
-  background: #909399;
-  color: white;
+  background: rgba(255, 255, 255, 0.7);
+  color: #6b7280;
+  border: 2px solid rgba(229, 231, 235, 0.6);
 }
 
 .btn-cancel:hover {
-  background: #a6a9ad;
+  background: rgba(107, 114, 128, 0.08);
+  color: #4a5568;
+  border-color: rgba(107, 114, 128, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 </style>

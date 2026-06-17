@@ -55,42 +55,105 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 🎨 收藏名单容器 - 柔和渐变背景 */
 .favorite-list-page {
-  padding: 20px;
-  max-width: 1000px;
-  margin: 0 auto;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #f0f4ff 0%, #faf0ff 50%, #f5f0ff 100%);
 }
 
+/* 🎨 Header - 毛玻璃效果 */
 .header {
+  max-width: 1400px;
+  margin: 0 auto 32px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 24px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .back-btn {
-  padding: 8px 16px;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 4px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4F46E5;
+  transform: translateY(-2px);
 }
 
 .header h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.5;
 }
 
+/* 🎨 加载和空状态 */
 .loading, .empty {
   text-align: center;
-  padding: 60px 0;
-  color: #999;
-  font-size: 16px;
+  padding: 80px 0;
+  color: #6b7280;
+  font-size: 18px;
+  font-weight: 500;
 }
 
+/* 🎨 表格容器 - 毛玻璃效果 */
 .favorite-table {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* 🎨 Element Plus 表格样式覆盖 */
+.favorite-table :deep(.el-table) {
+  background: transparent;
+}
+
+.favorite-table :deep(.el-table__header-wrapper) {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+}
+
+.favorite-table :deep(.el-table__header th) {
+  background: transparent;
+  color: #1a1a2e;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.favorite-table :deep(.el-table__body tr) {
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.favorite-table :deep(.el-table__body tr:hover) {
+  background: rgba(79, 70, 229, 0.05);
+  transform: translateY(-2px);
+}
+
+.favorite-table :deep(.el-table__body td) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  color: #4a5568;
 }
 </style>
