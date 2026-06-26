@@ -346,7 +346,7 @@ const fetchActivityDetail = async () => {
 
 // 跳转到编辑页面
 const goToEdit = () => {
-  router.push(`/activities/${activityId.value}/edit`)
+  router.push(`/activities/form/${activityId.value}`)
 }
 
 // 删除活动

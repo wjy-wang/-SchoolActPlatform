@@ -92,7 +92,7 @@ const goBack = () => {
 }
 
 const goToCreate = () => {
-  router.push('/activities/create')
+  router.push('/activities/form')
 }
 
 const goToDetail = (id) => {
@@ -100,7 +100,7 @@ const goToDetail = (id) => {
 }
 
 const goToEdit = (id) => {
-  router.push(`/activities/edit/${id}`)
+  router.push(`/activities/form/${id}`)
 }
 
 const handleDelete = async (activity) => {

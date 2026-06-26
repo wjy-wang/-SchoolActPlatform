@@ -117,7 +117,7 @@ const goToDetail = (id) => {
 }
 
 const goToEdit = (id) => {
-  router.push(`/activities/${id}/edit`)
+  router.push(`/activities/form/${id}`)
 }
 
 const handleDelete = async (id) => {

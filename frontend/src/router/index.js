@@ -31,8 +31,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/activities/create',
-    name: 'ActivityCreate',
+    path: '/activities/form/:id?',
+    name: 'ActivityForm',
     component: () => import('@/views/activities/Form.vue'),
     meta: { requiresAuth: true }
   },
@@ -40,12 +40,6 @@ const routes = [
     path: '/activities/:id',
     name: 'ActivityDetail',
     component: () => import('@/views/activities/ActivityDetail.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/activities/:id/edit',
-    name: 'ActivityEdit',
-    component: () => import('@/views/activities/Form.vue'),
     meta: { requiresAuth: true }
   },
   {

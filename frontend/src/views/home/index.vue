@@ -203,7 +203,7 @@ const handleFavoritesClick = () => {
 }
 
 const goToCreateActivity = () => {
-  router.push('/activities/create')
+  router.push('/activities/form')
 }
 
 const goToMyActivities = () => {

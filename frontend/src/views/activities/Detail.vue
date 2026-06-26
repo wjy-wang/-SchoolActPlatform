@@ -313,7 +313,7 @@ const goBack = () => {
 }
 
 const goToEdit = () => {
-  router.push(`/activities/${route.params.id}/edit`)
+  router.push(`/activities/form/${route.params.id}`)
 }
 
 onMounted(() => {
